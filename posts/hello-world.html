@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <title>Lappland's Tavern/hello world</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* ===== Hero 头图区域 ===== */
+        .hero {
+            width: 100%;
+            height: 18vh; /* 子页面头图可以稍矮一点，便于阅读 */
+            background: url("../images/head.PNG") center/cover no-repeat;
+            position: relative;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 15, 0.35);
+        }
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #efecff;
+            z-index: 1;
+        }
+        .hero-content h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        /* ===== 文章卡片区域 ===== */
+        .article {
+            max-width: 800px;
+            margin: -1vh auto 60px; /* 负边距让卡片略微上飘，与头图产生叠层效果 */
+            background: #fff;
+            padding: 40px 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        .article h2 {
+            margin-top: 0;
+            font-size: 2rem;
+        }
+        .article p {
+            line-height: 1.8;
+            color: #333;
+            margin: 1em 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头图 -->
+    <div class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>Lappland's Tavern</h1>
+        </div>
+    </div>
+
+    <!-- 文章主体 -->
+    <div class="article">
+        <h2>hello world</h2>
+        <p>paragraph 1</p>
+        <p>测试 第二段</p>
+        <p>
+            打了足够长的文字来看看段内换行功能怎么样但是好像很难打很长的文字不知道要说什么了怎
+            么办要不数数来凑字数吧1234567890111213141151617117818822451248163264128256512
+            1024204840968192163843276865536131712
+
+        </p>
+    </div>
+</body>
+</html>
