@@ -4,56 +4,71 @@
     <meta charset="UTF-8">
     <meta name="robots" content="noindex">
     <title>Lappland's Tavern</title>
+    <link rel="stylesheet" href="../style.css">
     <style>
-        body {
-            margin: 0;
-            font-family: sans-serif;
-            background: #f5f5f5;
-        }
-
-        /* ===== Hero 头图（与文章页保持一致的 60vh）===== */
-        .hero {
-            width: 100%;
-            height: 18vh;
-            background: url("./images/head.PNG") center/cover no-repeat;
-            position: relative;
-        }
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 15, 15, 0.35);
-        }
-        .hero-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #efecff;
-            z-index: 1;
-        }
-        .hero-content h1 {
-            font-size: 3rem;
-            margin: 0;
-        }
-        .hero-content p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin: 0.5rem 0 0;
-        }
-
-        /* ===== 文章列表区域 ===== */
-        .post-list {
-            max-width: 800px;
+        /* ===== 页面主体：左侧栏 + 文章列表 ===== */
+        .page-body {
+            display: flex;
+            flex-wrap: nowrap;          /* 禁止换行 */
+            max-width: 1100px;
             margin: -1vh auto 60px;
+            padding: 0 20px;
             position: relative;
             z-index: 2;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        /* 左侧分类卡片 */
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+            padding: 28px 22px;
+            height: 60vh;
+            box-sizing: border-box;
+            position: sticky;
+            top: 20px;
+        }
+        .sidebar h3 {
+            margin: 0 0 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .category-list li {
+            margin-bottom: 8px;
+        }
+        .category-list a {
+            text-decoration: none;
+            color: #555;
+            display: block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+        .category-list a:hover,
+        .category-list a.active {
+            background: #f0f0f0;
+            color: #000;
+            font-weight: bold;
+        }
+
+        /* 文章列表 */
+        .post-list {
+            flex: 1 1 0%;           /* 占满剩余宽度，可收缩 */
+            min-width: 0;            /* 允许内部收缩 */
             display: flex;
             flex-direction: column;
             gap: 20px;
+            margin: 0;
         }
         .post-card {
             background: #fff;
@@ -74,52 +89,147 @@
             font-size: 1.6rem;
             color: #222;
         }
-        .post-card .meta {
+        .post-card .time {
             font-size: 0.9rem;
             color: #777;
+            margin-bottom: 6px;
         }
         .post-card .excerpt {
             margin: 10px 0 0;
             color: #555;
             line-height: 1.6;
         }
+
+        /* 筛选隐藏 */
+        .post-card.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
+
     <!-- 头图 -->
     <div class="hero">
         <div class="overlay"></div>
         <div class="hero-content">
             <h1>Lappland's Tavern</h1>
-            <p>副标题</p>
         </div>
     </div>
 
-    <!-- 文章列表卡片 -->
-    <div class="post-list">
+    <!-- 内容区域：侧边栏 + 文章列表 -->
+    <div class="page-body">
+        <aside class="sidebar">
+            <ul class="category-list">
+                <li><a data-category="all" class="active">全部</a></li>
+                <li><a data-category="learn">可能是学习吧</a></li>
+                <li><a data-category="think">莫名其妙</a></li>
+                <li><a data-category="memento">Memento</a></li>
+                <li><a data-category="death">不想活也不想死</a></li>
+            </ul>
+        </aside>
 
-        <a href="./posts/pin.html" class="post-card">
-            <h2>置顶页</h2>
-            <div class="meta">2026-06-18</div>
-            <p class="excerpt">置顶页面</p>
-        </a>
+        <div class="post-list">
+            <a href="./posts/pin.html" class="post-card" data-category="learn">
+                <h2>置顶页</h2>
+                <div class="time">2026-06-18</div>
+                <p class="excerpt">置顶页面</p>
+            </a>
 
-        <a href="./posts/hello-world.html" class="post-card">
-            <h2>hello world</h2>
-            <div class="meta">2026-06-18 12:17:42</div>
-            <p class="excerpt">测试</p>
-        </a>
+            <a href="./posts/01-Knapsack-Problem.html" class="post-card" data-category="learn">
+                <h2>0/1背包问题</h2>
+                <div class="time">2026-06-20&nbsp;&nbsp;03:56</div>
+                <p class="excerpt">这个算法我在去年学过，但是当时完全看不明白，今天总算重看了一下，试着用我的话说一遍，</p>
+            </a>
 
+            <a href="./posts/hello-world.html" class="post-card" data-category="learn">
+                <h2>hello world</h2>
+                <div class="time">2026-06-18&nbsp;&nbsp;12:17:42</div>
+                <p class="excerpt">测试</p>
+            </a>
 
-        <a href="./posts/202508262317.html" class="post-card">
-            <div class="meta">2025-08-26 23:17</div>
-            <p class="excerpt">这之前的日子就这样画上句号，只要把每一天当成是做梦就好。</p>
-        </a>
+            <a href="./posts/202512040009.html" class="post-card" data-category="think">
+                <div class="time">2025-12-04&nbsp;&nbsp;00:09</div>
+                <p class="excerpt">好累好困好烦</p>
+            </a>
 
+            <a href="./posts/202511272324.html" class="post-card" data-category="think">
+                <div class="time">2025-11-27&nbsp;&nbsp;23:24</div>
+                <p class="excerpt">我不知道要说什么</p>
+            </a>
 
-        
+            <a href="./posts/202511191336.html" class="post-card" data-category="think">
+                <div class="time">2025-11-19&nbsp;&nbsp;13:36</div>
+                <p class="excerpt">学校的超市刚进门就有一股很浓很浓的面包味</p>
+            </a>
 
-        <!-- 可以继续复制卡片添加更多文章 -->
+            <a href="./posts/202511190730.html" class="post-card" data-category="death">
+                <div class="time">2025-11-19&nbsp;&nbsp;07:30</div>
+                <p class="excerpt">我突然想起来</p>
+            </a>
+
+            <a href="./posts/202510301523.html" class="post-card" data-category="think">
+                <div class="time">2025-10-30&nbsp;&nbsp;15:23</div>
+                <p class="excerpt">取次花丛懒回顾，半缘修道半缘君</p>
+            </a>
+
+            <a href="./posts/202510260211.html" class="post-card" data-category="think">
+                <div class="time">2025-10-26&nbsp;&nbsp;02:11</div>
+                <p class="excerpt">好累啊。</p>
+            </a>
+
+            <a href="./posts/202510201217.html" class="post-card" data-category="think">
+                <div class="time">2025-10-20&nbsp;&nbsp;12:17</div>
+                <p class="excerpt">四季豆真是从名称外观到口感都异常诡异。</p>
+            </a>
+
+            <a href="./posts/202508262317.html" class="post-card" data-category="death">
+                <div class="time">2025-08-26&nbsp;&nbsp;23:17</div>
+                <p class="excerpt">这之前的日子就这样画上句号，只要把每一天当成是做梦就好。</p>
+            </a>
+        </div>
     </div>
+
+    <script>
+        // 筛选函数
+        function filterCards(category) {
+            const cards = document.querySelectorAll('.post-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // 更新侧边栏高亮
+            document.querySelectorAll('.category-list a').forEach(link => {
+                if (link.dataset.category === category) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        // 根据 hash 应用筛选
+        function applyHashFilter() {
+            const hash = window.location.hash.slice(1);
+            const valid = ['all', 'learn', 'think', 'memento', 'death'];
+            const category = valid.includes(hash) ? hash : 'all';
+            filterCards(category);
+        }
+
+        // 给侧边栏所有链接绑定点击事件
+        document.querySelectorAll('.category-list a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // 设置 URL hash（会自动触发 hashchange 事件）
+                window.location.hash = this.dataset.category;
+            });
+        });
+
+        // 初始加载 & 浏览器前进/后退
+        window.addEventListener('DOMContentLoaded', applyHashFilter);
+        window.addEventListener('hashchange', applyHashFilter);
+    </script>
 </body>
 </html>
