@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <title>Lappland's Tavern/Kmp算法</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    
+    <a href="../index.html" class="back-button">HOME</a>
+    <div class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>Lappland's Tavern</h1>
+        </div>
+    </div>
+
+    <!-- 文章主体 -->
+    <div class="article">
+        <h2>Kmp算法</h2>
+        <div class="time">2026-07-05&nbsp;&nbsp;22:49:31</div>
+        <p>注意：该文章未完成</p>
+        <p>
+            这篇文章依旧是看不懂课本才要写的，但是我真被这个算法折磨疯了，这个算法真无敌了。太难了。&nbsp;<br>
+            下面是碎碎念，点此跳转到正文。&nbsp;<br>
+            我高二或者初三的一个物理老师说过，理解不了就死记硬背。可惜我没想到我真有理解不了的这一天。
+            其实之前好像也有过，但是这种就像是横在你面前的一座大山，然后只能不去看它，时间推移山变得越来越小，
+            像个小丘，直到有人问你这个东西是怎么得出来的，你转头一看，山还在那，你还是不懂。&nbsp;<br>
+            不过我现在可能懂了，但是这个东西我花了很久去理解，又花了很久去理解代码应该怎么写，不比01背包问题，
+            懂了算法就会写代码，这个东西我懂了算法也写不出代码来。&nbsp;<br>
+            对于一个较长的字符串（我们称之为主串或文本串）以及另一个较短的或者至少一样长的字符串（我们称之为子串或者模式串），
+            我们想知道主串是否包含了字串，以及它的具体位置，应该怎么做呢。&nbsp;<br>
+            最简单的想法是我们可以从主串的开头逐字符匹配字串，如果失配了，主串往下一个字符，
+            再开始逐字符匹配。这种方法简单易懂，但是很明显不是最优的算法，举例像主串为ABCDEFZABCDEFG，
+            子串为ABCDEFG的情况下，我们匹配到Z时失配，很明显的，我们不需要从第一个A后面的BCDEFZ开始匹配，
+            因为他们很明显都不是A，自然不可能时子串的开头。有没有一个方法，让我们能跳过这些已经遍历过的字符，
+            直接开始对新的字符匹配呢？&nbsp;<br>
+            这就是接下来要引入的kmp算法。在讲述这个算法之前，我需要说明，在一些课本中，比如我的课本，
+            会使用到next和nextval数组，我们不使用。同时我们也不使用1-based，而使用0-based，
+            即将字符串的第一个字符索引设为0。我也不推荐各位先学习另外一种做法，我觉得它极其难以理解，
+            被它折磨了很久。如果你完全没接触过kmp，那么可以忽略这段话，直接看接下来的内容。&nbsp;<br>
+            我们先观察什么时候可以跳过前述字符串，什么时候不能，在一些情况下，我们应该直接跳过前面的所有访问过的字符串，
+            如下面的例子：&nbsp;<br>主串：ABCDEFZABCDEFG&nbsp;<br>子串：ABCDEFG&nbsp;<br>
+            在标红的Z处失配，我们应该直接跳到下一个字符，即第二个A处继续尝试匹配。&nbsp;<br>
+            那么什么时候是特殊情况呢，我们看下面的例子：&nbsp;<br>主串：ABCDEABCDEAG&nbsp;<br>
+            子串：ABCDEAG&nbsp;<br>在标红的B处失配，我们应该从红B开始继续尝试匹配，
+            因为失配时最后的AB刚好是子串的第一二个字符。我们看下一个例子。&nbsp;<br>
+            主串：ABCDABCDABD&nbsp;<br>子串：ABCDABD&nbsp;<br>我们在红C处失配，但是我们发现，
+            这个地方刚好可以匹配上子串的第一个B，因此我们应该从红B开始继续匹配，也即从子串的第二个字符开始匹配。&nbsp;<br>
+            篇幅有限，我们不举更多例子，读者可自行举例。我们可以得到的结论是，失配时所匹配到的子串位置为j时，
+            我们应该回退到子串的border[j-1]处继续匹配，
+            其中border[n]表示子串的前n+1个字符的最长相等前后缀（前后缀均不等于自身）长度。&nbsp;<br>
+            这句话较难理解，举例来说，ABABACA的border数组计算方式如下：&nbsp;<br>
+            border[0]&nbsp;=&nbsp;0&nbsp;（A不存在不等于自身的前后缀）&nbsp;<br>
+            border[1]&nbsp;=&nbsp;0&nbsp;（AB只有前缀A与后缀B，而他们不等）&nbsp;<br>
+            border[2]&nbsp;=&nbsp;1&nbsp;（ABA有前缀A与后缀A相等，AB与BA不等，最长相等前后缀为A）&nbsp;<br>
+            border[3]&nbsp;=&nbsp;2&nbsp;（ABAB有前缀AB与后缀AB相等，其他略）&nbsp;<br>
+            border[4]&nbsp;=&nbsp;3&nbsp;（ABABA有ABA与ABA相等）&nbsp;<br>
+            border[5]&nbsp;=&nbsp;0&nbsp;（ABABAC没有前后缀相等）&nbsp;<br>
+            border[6]&nbsp;=&nbsp;1&nbsp;（ABABACA有A与A相等）&nbsp;<br>
+            则ABABACA的border数组为0,&nbsp;0,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;0,&nbsp;1&nbsp;<br>
+            我们匹配的时候会分配两个指针，一个指向主串，一个指向子串，需要明确的是一般不是声明出指针变量，
+            用i与j来指向s1[i]和s2[j]是常见做法。&nbsp;<br>
+            在匹配时，i与j同时向后移，尝试匹配下一个字符，失配时，
+            j变为border[j&nbsp;–&nbsp;1]，也即指向子串的指针回退。&nbsp;<br>
+            为什么应该回退到那个地方呢，因为前后缀相等意味着在失配时这里刚好还可以匹配开头的与后缀长度相等的一个地方。
+            其实这个很难表达清楚，读者可以自行举例验证。&nbsp;<br>
+            搞清楚了border数组的机制之后，下一个难点是如何写出代码。这里直接给出代码，再进行讲解。&nbsp;<br>
+            #include&nbsp;<stdio.h>&nbsp;<br>
+            #include&nbsp;<string.h>&nbsp;<br>
+            #define&nbsp;MAXLEN&nbsp;1000005&nbsp;<br>
+            char&nbsp;s1[MAXLEN],&nbsp;s2[MAXLEN];&nbsp;<br>
+            int&nbsp;border[MAXLEN];&nbsp;<br>int&nbsp;main(void)&nbsp;<br>
+            {&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;scanf("%s",&nbsp;s1);&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;scanf("%s",&nbsp;s2);&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;n&nbsp;=&nbsp;strlen(s1);&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;m&nbsp;=&nbsp;strlen(s2);&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;j&nbsp;=&nbsp;0;&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;border[0]&nbsp;=&nbsp;0;&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;1;&nbsp;i&nbsp;<&nbsp;m;&nbsp;i++)&nbsp;{&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(j&nbsp;>&nbsp;0&nbsp;&&&nbsp;s2[i]&nbsp;!=&nbsp;s2[j])&nbsp;{&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;j&nbsp;=&nbsp;border[j&nbsp;-&nbsp;1];&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(s2[i]&nbsp;==&nbsp;s2[j])&nbsp;{&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;j++;&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;border[i]&nbsp;=&nbsp;j;&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;<&nbsp;m;&nbsp;i++)&nbsp;{&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf("%d&nbsp;",&nbsp;border[i]);&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;printf("\n");&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;&nbsp;<br>}
+        </p>
+    </div>
+</body>
+</html>
